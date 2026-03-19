@@ -8,7 +8,7 @@ import { PLANS } from '../services/plans';
 import { User, Bell, Shield, RefreshCw, Trash2, Check, Crown, ArrowRight, Link2, Unlink, Server, ExternalLink } from 'lucide-react';
 import './SettingsPage.css';
 
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 export default function SettingsPage() {
   const { user, refreshUser, handleLogout, handlePlanChange } = useContext(UserContext);

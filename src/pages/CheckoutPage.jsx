@@ -1,12 +1,12 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../App';
 import { AuthService } from '../services/auth';
 import { PLANS } from '../services/plans';
-import { Check, Crown, Sparkles, ArrowRight, CreditCard, ShieldCheck, Lock, ExternalLink } from 'lucide-react';
+import { Check, Crown, Sparkles, ArrowRight, CreditCard, ShieldCheck, ExternalLink } from 'lucide-react';
 import './CheckoutPage.css';
 
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 export default function CheckoutPage() {
   const { user, handlePlanChange } = useContext(UserContext);
@@ -14,10 +14,13 @@ export default function CheckoutPage() {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('stripe');
+  const [paymentConfig, setPaymentConfig] = useState(null);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/payments/config`).then(r => r.json()).then(setPaymentConfig).catch(() => {});
+  }, []);
 
   if (!user) return null;
-
   const currentPlan = user.plan || 'free';
 
   const handleCheckout = async (planId) => {
@@ -25,26 +28,19 @@ export default function CheckoutPage() {
     setSelectedPlan(planId);
     setProcessing(true);
 
-    // Try Stripe first
-    try {
-      const res = await fetch(`${API_BASE}/stripe/checkout`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: planId, username: user.username }),
-      });
-      const data = await res.json();
-
-      if (data.url && !data.demo) {
-        // Real Stripe checkout — redirect
-        window.location.href = data.url;
-        return;
+    // Check if LemonSqueezy is configured
+    if (paymentConfig?.configured) {
+      const url = planId === 'pro' ? paymentConfig.proCheckoutUrl : paymentConfig.enterpriseCheckoutUrl;
+      if (url) {
+        // Redirect to LemonSqueezy checkout
+        window.open(url, '_blank');
+        // Activate plan in demo mode for now (webhook will confirm in production)
+        await new Promise(r => setTimeout(r, 1500));
       }
-    } catch {
-      // Backend not available — use demo mode
     }
 
-    // Demo mode — simulate payment
-    await new Promise(r => setTimeout(r, 2000));
+    // Activate plan locally (in production, webhook would do this)
+    await new Promise(r => setTimeout(r, 1000));
     AuthService.changePlan(user.username, planId);
     handlePlanChange(planId);
     setProcessing(false);
@@ -58,11 +54,11 @@ export default function CheckoutPage() {
         <div className="checkout-success glass-card">
           <div className="success-icon"><ShieldCheck size={48} /></div>
           <h2>Welcome to {plan.name}! 🎉</h2>
-          <p>Your plan has been activated! You now have access to all {plan.name} features.</p>
+          <p>Your plan has been activated with all {plan.name} features.</p>
           <div className="success-details">
             <div className="detail-row"><span>Starting Balance</span><span>${plan.startingBalance.toLocaleString()}</span></div>
             <div className="detail-row"><span>Bot Strategies</span><span>{plan.maxBots === Infinity ? 'Unlimited' : plan.maxBots}</span></div>
-            <div className="detail-row"><span>AI Strategy Builder</span><span>{plan.features.customBots ? '✅ Yes' : '❌ No'}</span></div>
+            <div className="detail-row"><span>AI Strategy Builder</span><span>{plan.features.customBots ? '✅' : '❌'}</span></div>
           </div>
           <button className="btn-primary" onClick={() => navigate('/dashboard')}>
             Go to Dashboard <ArrowRight size={16} />
@@ -114,14 +110,11 @@ export default function CheckoutPage() {
       </div>
 
       <div className="checkout-info glass-card">
-        <div className="info-row"><CreditCard size={16} /> <span>Secure payment via Stripe. Cancel anytime.</span></div>
-        <div className="info-row"><Lock size={16} /> <span>Your payment info is never stored on our servers.</span></div>
+        <div className="info-row"><CreditCard size={16} /> <span>Secure payment via LemonSqueezy. Cancel anytime.</span></div>
         <div className="info-row"><ShieldCheck size={16} /> <span>7-day money-back guarantee on all paid plans.</span></div>
-        <p className="stripe-note">
-          {paymentMethod === 'stripe'
-            ? '💡 Tip: Connect Stripe in Settings → add your test keys to enable real payments.'
-            : 'Running in demo mode — plans activate instantly for testing.'}
-        </p>
+        {!paymentConfig?.configured && (
+          <p className="stripe-note">💡 Running in demo mode — plans activate instantly for testing.</p>
+        )}
       </div>
     </div>
   );
