@@ -8,7 +8,7 @@ import { PLANS } from '../services/plans';
 import { User, Bell, Shield, RefreshCw, Trash2, Check, Crown, ArrowRight, Link2, Unlink, Server, ExternalLink } from 'lucide-react';
 import './SettingsPage.css';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:3001/api');
 
 export default function SettingsPage() {
   const { user, refreshUser, handleLogout, handlePlanChange } = useContext(UserContext);
@@ -29,7 +29,7 @@ export default function SettingsPage() {
         const res = await fetch(`${API_BASE}/health`);
         const data = await res.json();
         setServerStatus(data);
-        const broker = await fetch(`${API_BASE}/broker/status`);
+        const broker = await fetch(`${API_BASE}/broker?action=status`);
         setBrokerStatus(await broker.json());
       } catch {
         setServerStatus(null);
@@ -92,11 +92,11 @@ export default function SettingsPage() {
                 </a>
               )}
             </div>
-            <div className={`connection-item ${serverStatus?.services?.stripe ? 'connected' : 'disconnected'}`}>
-              <div className="conn-icon">{serverStatus?.services?.stripe ? '🟢' : '⚪'}</div>
+            <div className={`connection-item ${serverStatus?.services?.payments ? 'connected' : 'disconnected'}`}>
+              <div className="conn-icon">{serverStatus?.services?.payments ? '🟢' : '⚪'}</div>
               <div className="conn-info">
-                <h4>Stripe (Payments)</h4>
-                <p>{serverStatus?.services?.stripe ? 'Ready — accepting payments' : 'Not configured — add keys in server/.env (plans work in demo mode)'}</p>
+                <h4>LemonSqueezy (Payments)</h4>
+                <p>{serverStatus?.services?.payments ? 'Ready — accepting payments via LemonSqueezy' : 'Not configured — add checkout URLs in Vercel env vars (plans work in demo mode)'}</p>
               </div>
             </div>
           </div>

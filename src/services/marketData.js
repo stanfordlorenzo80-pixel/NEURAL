@@ -1,5 +1,6 @@
 // Real Market Data Service — CoinGecko + Alpaca + Fallback
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+// In production (Vercel), API is at /api/... — in dev, falls back to localhost:3001
+const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:3001/api');
 const COINGECKO_DIRECT = 'https://api.coingecko.com/api/v3';
 
 // Mapping: our symbol → coingecko id
@@ -61,7 +62,7 @@ async function fetchCryptoPrices() {
 // Fetch stock prices from backend (Alpaca) or simulate
 async function fetchStockPrices() {
   try {
-    const res = await fetch(`${API_BASE}/market/stocks`);
+    const res = await fetch(`${API_BASE}/market?action=stocks`);
     const data = await res.json();
     if (data.available && data.data) return data;
   } catch {}
