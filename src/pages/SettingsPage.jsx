@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../App';
 import { PortfolioService } from '../services/portfolio';
 import { TradingBotService } from '../services/tradingBot';
+import { AuthService } from '../services/auth';
 import { PLANS } from '../services/plans';
-import { User, Bell, Shield, RefreshCw, Trash2, Check, Crown, ArrowRight, Lock, CreditCard } from 'lucide-react';
+import { User, Bell, Shield, RefreshCw, Trash2, Check, Crown, ArrowRight, Lock, CreditCard, Key, Eye, EyeOff, Save, ExternalLink } from 'lucide-react';
 import './SettingsPage.css';
 
 export default function SettingsPage() {
@@ -15,7 +16,22 @@ export default function SettingsPage() {
     tradeAlerts: true, botSignals: true, priceAlerts: true, news: false,
   });
 
+  // User's own Alpaca keys
+  const storageKey = `neuraltrade_broker_${user?.username}`;
+  const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+  const [apiKey, setApiKey] = useState(saved.apiKey || '');
+  const [secretKey, setSecretKey] = useState(saved.secretKey || '');
+  const [showSecret, setShowSecret] = useState(false);
+  const [isPaper, setIsPaper] = useState(saved.paper !== false);
+  const [keysSaved, setKeysSaved] = useState(false);
+
   const currentPlan = PLANS[user?.plan] || PLANS.free;
+
+  const handleSaveKeys = () => {
+    localStorage.setItem(storageKey, JSON.stringify({ apiKey, secretKey, paper: isPaper }));
+    setKeysSaved(true);
+    setTimeout(() => setKeysSaved(false), 3000);
+  };
 
   const handleRefill = () => {
     TradingBotService.stop();
@@ -34,12 +50,12 @@ export default function SettingsPage() {
           <div className="account-info-grid">
             <div className="account-row"><span className="account-label">Username</span><span className="account-value">{user?.username}</span></div>
             <div className="account-row"><span className="account-label">Member Since</span><span className="account-value">{new Date(user?.createdAt).toLocaleDateString()}</span></div>
-            <div className="account-row"><span className="account-label">Current Plan</span>
+            <div className="account-row"><span className="account-label">Plan</span>
               <span className="account-value plan-value" style={{ color: currentPlan.color }}><Crown size={14} /> {currentPlan.name}</span></div>
           </div>
         </div>
 
-        {/* Plan */}
+        {/* Subscription */}
         <div className="settings-card glass-card">
           <div className="settings-card-header"><Crown size={20} /><h3>Subscription</h3></div>
           <div className="current-plan-card" style={{ borderColor: currentPlan.color }}>
@@ -55,24 +71,40 @@ export default function SettingsPage() {
           )}
         </div>
 
-        {/* Trading */}
+        {/* Broker Connection — USER'S OWN KEYS */}
         <div className="settings-card glass-card">
-          <div className="settings-card-header"><CreditCard size={20} /><h3>Trading</h3></div>
-          <div className="toggle-list">
-            <div className="toggle-item">
-              <div>
-                <h4>Trading Mode</h4>
-                <p>Paper trading uses simulated funds. Live trading uses real money through Alpaca.</p>
-              </div>
-              <div className="trading-mode-selector">
-                <span className="mode-active">📄 Paper</span>
-                <span className="mode-divider">|</span>
-                <span className="mode-inactive" title="Connect your Alpaca live keys to enable">🔒 Live</span>
+          <div className="settings-card-header"><Key size={20} /><h3>Broker Connection</h3></div>
+          <p className="settings-desc">Connect your own Alpaca account to trade stocks and crypto. Your keys are stored securely in your browser only — we never see them.</p>
+          <div className="broker-form">
+            <div className="broker-field">
+              <label>API Key</label>
+              <input type="text" placeholder="Enter your Alpaca API key" value={apiKey}
+                onChange={e => setApiKey(e.target.value)} />
+            </div>
+            <div className="broker-field">
+              <label>Secret Key</label>
+              <div className="secret-input-wrap">
+                <input type={showSecret ? 'text' : 'password'} placeholder="Enter your Alpaca secret key" value={secretKey}
+                  onChange={e => setSecretKey(e.target.value)} />
+                <button className="eye-btn" onClick={() => setShowSecret(!showSecret)}>
+                  {showSecret ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
             </div>
-            <div className="trading-note">
-              <Lock size={14} />
-              <span>Live trading requires an Alpaca brokerage account with live API keys. <a href="https://alpaca.markets" target="_blank" rel="noopener">Sign up at Alpaca →</a></span>
+            <div className="broker-mode-row">
+              <div className="trading-mode-toggle">
+                <button className={`mode-btn ${isPaper ? 'active' : ''}`} onClick={() => setIsPaper(true)}>📄 Paper Trading</button>
+                <button className={`mode-btn ${!isPaper ? 'active' : ''}`} onClick={() => setIsPaper(false)}>💰 Live Trading</button>
+              </div>
+              {!isPaper && <p className="live-warning">⚠️ Live mode uses real money. Trade responsibly.</p>}
+            </div>
+            <div className="broker-actions">
+              <button className="btn-primary" onClick={handleSaveKeys} disabled={!apiKey || !secretKey}>
+                <Save size={16} /> {keysSaved ? '✅ Saved!' : 'Save Keys'}
+              </button>
+              <a href="https://alpaca.markets" target="_blank" rel="noopener" className="btn-secondary">
+                <ExternalLink size={14} /> Get Free API Keys
+              </a>
             </div>
           </div>
         </div>
@@ -97,27 +129,27 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* Privacy & Security */}
+        {/* Security */}
         <div className="settings-card glass-card">
           <div className="settings-card-header"><Shield size={20} /><h3>Privacy & Security</h3></div>
           <div className="security-info">
             <div className="security-row"><Lock size={14} /> <span>Your data is stored locally on your device</span></div>
-            <div className="security-row"><Shield size={14} /> <span>API keys are stored server-side, never in your browser</span></div>
-            <div className="security-row"><Check size={14} /> <span>256-bit SSL encryption on all connections</span></div>
+            <div className="security-row"><Key size={14} /> <span>API keys never leave your browser</span></div>
+            <div className="security-row"><Shield size={14} /> <span>256-bit SSL encryption on all connections</span></div>
           </div>
         </div>
 
         {/* Reset */}
         <div className="settings-card glass-card danger">
           <div className="settings-card-header"><RefreshCw size={20} /><h3>Reset Paper Portfolio</h3></div>
-          <p className="settings-desc">Reset your paper trading balance to <strong>${currentPlan.startingBalance.toLocaleString()}</strong>. This stops the AI bot and clears all trade history.</p>
+          <p className="settings-desc">Reset balance to <strong>${currentPlan.startingBalance.toLocaleString()}</strong>. Clears all trades and stops the bot.</p>
           {!showRefillConfirm ? (
             <button className="btn-danger" onClick={() => setShowRefillConfirm(true)}><Trash2 size={14} /> Reset Portfolio</button>
           ) : (
             <div className="confirm-reset">
-              <p>⚠️ This cannot be undone. All trades and positions will be cleared.</p>
+              <p>⚠️ This cannot be undone.</p>
               <div className="confirm-btns">
-                <button className="btn-danger" onClick={handleRefill}>Yes, Reset Everything</button>
+                <button className="btn-danger" onClick={handleRefill}>Yes, Reset</button>
                 <button className="btn-secondary" onClick={() => setShowRefillConfirm(false)}>Cancel</button>
               </div>
             </div>
