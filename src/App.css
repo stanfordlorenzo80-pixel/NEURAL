@@ -1,0 +1,16 @@
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-area {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  transition: margin-left var(--transition-normal);
+}
+
+.main-content {
+  padding: var(--space-lg);
+  margin-top: var(--header-height);
+  min-height: calc(100vh - var(--header-height));
+}

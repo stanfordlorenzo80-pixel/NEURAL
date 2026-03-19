@@ -1,0 +1,218 @@
+.checkout-page {
+  animation: fadeIn 0.4s ease;
+  display: flex;
+  justify-content: center;
+  padding: var(--space-xl) 0;
+}
+
+.checkout-container {
+  max-width: 1000px;
+  width: 100%;
+}
+
+.checkout-container h2 {
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: var(--space-xs);
+}
+
+.checkout-subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2xl);
+}
+
+.checkout-plans {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.checkout-plan {
+  padding: var(--space-xl);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-normal);
+}
+
+.checkout-plan:hover { transform: translateY(-4px); }
+
+.checkout-plan.selected {
+  border-color: var(--plan-color);
+  box-shadow: 0 0 30px color-mix(in srgb, var(--plan-color) 15%, transparent);
+}
+
+.checkout-plan.featured { border-color: rgba(59,130,246,0.3); }
+
+.checkout-badge {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 16px;
+  background: var(--accent-gradient);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: white;
+}
+
+.checkout-plan h3 {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--space-sm);
+}
+
+.checkout-price {
+  margin-bottom: var(--space-sm);
+}
+
+.price-amount {
+  font-size: var(--font-size-4xl);
+  font-weight: 800;
+}
+
+.price-period {
+  font-size: var(--font-size-md);
+  color: var(--text-tertiary);
+}
+
+.checkout-balance {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-lg);
+}
+
+.checkout-features {
+  list-style: none;
+  margin-bottom: var(--space-md);
+}
+
+.checkout-features li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 4px 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.checkout-features li svg { color: var(--green); flex-shrink: 0; }
+
+.checkout-limitations li {
+  list-style: none;
+  padding: 2px 0;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.plan-selected-indicator {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.checkout-action {
+  text-align: center;
+}
+
+.checkout-summary-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-xl);
+  margin-bottom: var(--space-md);
+}
+
+.checkout-summary-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+}
+
+.checkout-total {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--font-size-xl);
+  color: var(--accent-primary);
+}
+
+.checkout-btn {
+  padding: 12px 28px !important;
+}
+
+.processing {
+  animation: pulse-glow 1s ease-in-out infinite;
+}
+
+.checkout-trust {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
+.checkout-trust svg { color: var(--green); }
+
+/* Success */
+.checkout-success {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: var(--space-2xl);
+  text-align: center;
+}
+
+.success-icon {
+  font-size: 48px;
+  margin-bottom: var(--space-md);
+}
+
+.checkout-success h2 {
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--space-sm);
+}
+
+.checkout-success p {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-xl);
+}
+
+.success-details {
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.success-detail {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-sm) 0;
+  font-size: var(--font-size-sm);
+}
+
+.success-detail span:first-child { color: var(--text-secondary); }
+.success-detail span:last-child { font-weight: 600; }
+
+.active-badge {
+  color: var(--green) !important;
+  background: var(--green-bg);
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+}
+
+@media (max-width: 768px) {
+  .checkout-plans { grid-template-columns: 1fr; }
+}

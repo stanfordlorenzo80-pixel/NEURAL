@@ -1,0 +1,261 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* Colors - Dark Theme */
+  --bg-primary: #0a0e17;
+  --bg-secondary: #111827;
+  --bg-tertiary: #1a2332;
+  --bg-card: rgba(17, 24, 39, 0.8);
+  --bg-card-hover: rgba(26, 35, 50, 0.9);
+  --bg-glass: rgba(17, 24, 39, 0.6);
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  --text-muted: #475569;
+
+  --accent-primary: #3b82f6;
+  --accent-primary-hover: #2563eb;
+  --accent-secondary: #8b5cf6;
+  --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #06b6d4 100%);
+  --accent-gradient-hover: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #0891b2 100%);
+
+  --green: #10b981;
+  --green-bg: rgba(16, 185, 129, 0.1);
+  --green-border: rgba(16, 185, 129, 0.3);
+  --red: #ef4444;
+  --red-bg: rgba(239, 68, 68, 0.1);
+  --red-border: rgba(239, 68, 68, 0.3);
+  --yellow: #f59e0b;
+  --yellow-bg: rgba(245, 158, 11, 0.1);
+  --cyan: #06b6d4;
+  --purple: #8b5cf6;
+
+  --border-color: rgba(148, 163, 184, 0.1);
+  --border-color-hover: rgba(148, 163, 184, 0.2);
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+
+  /* Typography */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 2rem;
+  --font-size-4xl: 2.5rem;
+  --font-size-5xl: 3.5rem;
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 40px rgba(59, 130, 246, 0.15);
+  --shadow-glow-purple: 0 0 40px rgba(139, 92, 246, 0.15);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  /* Sidebar */
+  --sidebar-width: 260px;
+  --sidebar-collapsed: 72px;
+  --header-height: 64px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  color: inherit;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  color: inherit;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-size-sm);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--accent-primary);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--text-tertiary);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Utility Classes */
+.glass-card {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-normal);
+}
+
+.glass-card:hover {
+  border-color: var(--border-color-hover);
+  background: var(--bg-card-hover);
+}
+
+.gradient-text {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--accent-gradient);
+  color: white;
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: var(--accent-gradient-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-normal);
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  border-color: var(--accent-primary);
+  background: var(--bg-card-hover);
+}
+
+.stat-positive { color: var(--green); }
+.stat-negative { color: var(--red); }
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); }
+  50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.25); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.4s ease forwards;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  :root {
+    --font-size-5xl: 2.25rem;
+    --font-size-4xl: 1.875rem;
+    --font-size-3xl: 1.5rem;
+  }
+}
